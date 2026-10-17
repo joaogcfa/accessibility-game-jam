@@ -15,6 +15,14 @@ void ASixthSenseGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	UGameplayStatics::CreatePlayer(this, 1, true);
+
+	GetWorldTimerManager().SetTimer(
+		MemberTimerHandle,               
+		this,                            
+		&ASixthSenseGameMode::focousAudioOnBlindPlayer,     
+		0.1f,                            
+		false                            
+	);
 }
 
 UClass* ASixthSenseGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -68,4 +76,31 @@ AActor* ASixthSenseGameMode::ChoosePlayerStart_Implementation(AController* Playe
 bool ASixthSenseGameMode::ShouldSpawnAtStartSpot(AController* Player)
 {
 	return false;
+}
+
+void ASixthSenseGameMode::focousAudioOnBlindPlayer()
+{
+	APlayerController* sightedPlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	APlayerController* blindPlayerController = UGameplayStatics::GetPlayerController(this, 1);
+
+	if (sightedPlayerController == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("Couldnt get sightedPlayerController after timer"));
+		return ;
+	}
+	if (blindPlayerController == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("Couldnt get blindPlayerController after timer"));
+		return ;
+	}
+	APawn* blindPawn = blindPlayerController->GetPawn();
+	if (blindPawn == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("Couldnt get blindPawn"));
+		return;
+	}
+
+	sightedPlayerController->SetAudioListenerOverride(blindPawn->GetRootComponent(), FVector::ZeroVector, FRotator::ZeroRotator);
+
+	UE_LOG(LogTemp, Warning, TEXT("AUdio OVerride done!"));
+
+
+
 }
