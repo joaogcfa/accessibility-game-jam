@@ -16,6 +16,15 @@ class ASixthSenseGameMode : public AGameModeBase
 
 public:
 	ASixthSenseGameMode();
+
+	UPROPERTY(EditAnywhere, Category = "Pawns") TSubclassOf<APawn> SightedPawnClass;
+
+	UPROPERTY(EditAnywhere, Category = "Pawns") TSubclassOf<APawn> BlindPawnClass;
+
+protected:
+	virtual void BeginPlay() override;
+
+	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 };
 
 
