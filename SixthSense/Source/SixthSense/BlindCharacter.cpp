@@ -2,7 +2,7 @@
 
 
 #include "BlindCharacter.h"
-#include "ShootableTarget.h"
+#include "Shootable.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -73,9 +73,9 @@ void ABlindCharacter::Fire()
 
 	if (bHit)
 	{
-		if (AShootableTarget* Target = Cast<AShootableTarget>(Hit.GetActor()))
+		if (IShootable* Shootable = Cast<IShootable>(Hit.GetActor()))
 		{
-			Target->OnShot();
+			Shootable->OnShot();
 		}
 	}
 }
