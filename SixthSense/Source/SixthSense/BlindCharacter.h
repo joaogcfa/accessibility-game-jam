@@ -7,31 +7,48 @@
 #include "BlindCharacter.generated.h"
 
 class USoundBase;
-/**
- * 
- */
+class UInputAction;
+class UInputMappingContext;
+
+
 UCLASS()
 class SIXTHSENSE_API ABlindCharacter : public ASixthSenseCharacter
 {
 	GENERATED_BODY()
-	
+
 public:
 	ABlindCharacter();
 
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	// Sound played once per step
+	virtual void PawnClientRestart() override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	void Fire();
+
+	// ---- Footsteps ----
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Footsteps")
 	TObjectPtr<USoundBase> FootstepSound;
 
-	// Distance walked between two steps, in Unreal units
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Footsteps")
 	float StepDistance = 180.f;
 
-	// Below this speed the pawn counts as standing still
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Footsteps")
 	float MinStepSpeed = 20.f;
+
+	// ---- Shooting ----
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+	TObjectPtr<UInputAction> ShootAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+	TObjectPtr<UInputMappingContext> BlindMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+	TObjectPtr<USoundBase> ShotSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+	float FireRange = 5000.f;
 
 private:
 	float DistanceSinceLastStep = 0.f;
