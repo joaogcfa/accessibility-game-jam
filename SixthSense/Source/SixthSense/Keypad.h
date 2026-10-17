@@ -43,13 +43,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Keypad")
 	FString Code = TEXT("1234");
 
-	// Block that moves when the code is correct (e.g. the exit door)
+	// Optional: block that moves when the code is correct (e.g. a door)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Keypad")
 	TObjectPtr<AToggleBlock> TargetBlock;
 
 	// true = raise the block when solved, false = lower it
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Keypad")
 	bool bRaiseTargetOnSolve = true;
+
+	// Optional: when solved, the sighted player is teleported here (place a Target Point in the next room)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Keypad")
+	TObjectPtr<AActor> TeleportDestination;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Keypad")
 	float InteractRange = 400.f;
@@ -82,6 +86,7 @@ protected:
 private:
 	void OnAnyKey(FKey Key);
 	void Submit();
+	void TeleportSightedPlayer();
 	void UpdateDisplay(const FString& OverrideText = FString());
 	bool IsPlayerLookingAtMe() const;
 	TCHAR KeyToChar(const FKey& Key) const;
