@@ -81,9 +81,9 @@ TCHAR AKeypad::KeyToChar(const FKey& Key) const
 	if (Mode == EKeypadMode::Numbers)
 	{
 		const FKey Digits[] = { EKeys::Zero, EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four,
-		                        EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine };
+								EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine };
 		const FKey Pad[] = { EKeys::NumPadZero, EKeys::NumPadOne, EKeys::NumPadTwo, EKeys::NumPadThree, EKeys::NumPadFour,
-		                     EKeys::NumPadFive, EKeys::NumPadSix, EKeys::NumPadSeven, EKeys::NumPadEight, EKeys::NumPadNine };
+							 EKeys::NumPadFive, EKeys::NumPadSix, EKeys::NumPadSeven, EKeys::NumPadEight, EKeys::NumPadNine };
 		for (int32 i = 0; i < 10; ++i)
 		{
 			if (Key == Digits[i] || Key == Pad[i])
@@ -94,9 +94,9 @@ TCHAR AKeypad::KeyToChar(const FKey& Key) const
 		return 0;
 	}
 
-	if (Key == EKeys::Up)    { return TEXT('U'); }
-	if (Key == EKeys::Down)  { return TEXT('D'); }
-	if (Key == EKeys::Left)  { return TEXT('L'); }
+	if (Key == EKeys::Up) { return TEXT('U'); }
+	if (Key == EKeys::Down) { return TEXT('D'); }
+	if (Key == EKeys::Left) { return TEXT('L'); }
 	if (Key == EKeys::Right) { return TEXT('R'); }
 	return 0;
 }
@@ -112,6 +112,7 @@ void AKeypad::Submit()
 		{
 			TargetBlock->SetRaised(bRaiseTargetOnSolve);
 		}
+		TeleportSightedPlayer();
 		OnSolved.Broadcast();
 	}
 	else
@@ -120,6 +121,31 @@ void AKeypad::Submit()
 		Entered.Empty();
 		UpdateDisplay(TEXT("WRONG"));
 	}
+}
+
+void AKeypad::TeleportSightedPlayer()
+{
+	if (!TeleportDestination)
+	{
+		return;
+	}
+
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	if (!PC)
+	{
+		return;
+	}
+
+	APawn* Pawn = PC->GetPawn();
+	if (!Pawn)
+	{
+		return;
+	}
+
+	const FVector Location = TeleportDestination->GetActorLocation();
+	const FRotator Rotation = TeleportDestination->GetActorRotation();
+	Pawn->TeleportTo(Location, Rotation);
+	PC->SetControlRotation(Rotation);
 }
 
 void AKeypad::UpdateDisplay(const FString& OverrideText)
