@@ -1,27 +1,70 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "ToggleBlock.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 
-// Sets default values
 AToggleBlock::AToggleBlock()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(Root);
+	Mesh->SetMobility(EComponentMobility::Movable);
+
+	CreakAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("CreakAudio"));
+	CreakAudio->SetupAttachment(Mesh);
+	CreakAudio->bAutoActivate = false;
 }
 
-// Called when the game starts or when spawned
 void AToggleBlock::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	TargetProgress = FMath::Clamp(StartProgress, 0.f, 1.f);
+	CurrentHeight = FMath::Lerp(LowHeight, HighHeight, TargetProgress);
+	Mesh->SetRelativeLocation(FVector(0.f, 0.f, CurrentHeight));
+
+	if (CreakSound)
+	{
+		CreakAudio->SetSound(CreakSound);
+	}
 }
 
-// Called every frame
 void AToggleBlock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	const float TargetHeight = FMath::Lerp(LowHeight, HighHeight, TargetProgress);
+	const bool bMoving = !FMath::IsNearlyEqual(CurrentHeight, TargetHeight, 0.5f);
+
+	if (bMoving)
+	{
+		CurrentHeight = FMath::FInterpConstantTo(CurrentHeight, TargetHeight, DeltaTime, MoveSpeed);
+		Mesh->SetRelativeLocation(FVector(0.f, 0.f, CurrentHeight));
+	}
+
+	if (CreakSound)
+	{
+		if (bMoving && !CreakAudio->IsPlaying())
+		{
+			CreakAudio->Play();
+		}
+		else if (!bMoving && CreakAudio->IsPlaying())
+		{
+			CreakAudio->Stop();
+		}
+	}
 }
 
+void AToggleBlock::SetProgress(float NewProgress)
+{
+	TargetProgress = FMath::Clamp(NewProgress, 0.f, 1.f);
+}
+
+void AToggleBlock::SetRaised(bool bRaised)
+{
+	SetProgress(bRaised ? 1.f : 0.f);
+}
