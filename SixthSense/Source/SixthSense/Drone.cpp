@@ -33,6 +33,19 @@ ADrone::ADrone()
 	HumAudio->AttenuationOverrides.AttenuationShape = EAttenuationShape::Sphere;
 	HumAudio->AttenuationOverrides.AttenuationShapeExtents = FVector(200.f, 0.f, 0.f);
 	HumAudio->AttenuationOverrides.FalloffDistance = 2000.f;
+
+	DetectSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DetectSphere"));
+	DetectSphere->SetupAttachment(Collision);
+	DetectSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	DetectSphere->SetHiddenInGame(true);
+	DetectSphere->ShapeColor = FColor::Green;
+	DetectSphere->InitSphereRadius(1000.f);
+}
+
+void ADrone::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	DetectSphere->SetSphereRadius(FMath::Max(DetectRadius, 1.f));
 }
 
 void ADrone::BeginPlay()
@@ -41,6 +54,7 @@ void ADrone::BeginPlay()
 
 	HitsLeft = FMath::Max(HitsToKill, 1);
 	StartLocation = GetActorLocation();
+	bAlerted = (DetectRadius <= 0.f);
 
 	if (HumAttenuation)
 	{
@@ -85,6 +99,22 @@ void ADrone::ChasePlayer(float DeltaTime)
 
 	const FVector ToTarget = Target->GetActorLocation() - GetActorLocation();
 	const float Distance = ToTarget.Size();
+	const bool bInRange = (DetectRadius <= 0.f) || (Distance <= DetectRadius);
+
+	// Wait until the player enters the radius
+	if (!bAlerted)
+	{
+		if (!bInRange)
+		{
+			return;
+		}
+		bAlerted = true;
+	}
+	else if (!bStayAlerted && !bInRange)
+	{
+		bAlerted = false;
+		return;
+	}
 
 	if (Distance <= KillDistance)
 	{
@@ -173,8 +203,9 @@ void ADrone::HandleCatch()
 		}
 	}
 
-	// Send the drone back to its start and resume
+	// Send the drone back to its start and wait again
 	SetActorLocation(StartLocation);
+	bAlerted = (DetectRadius <= 0.f);
 	bCaught = false;
 	if (HumSound)
 	{
