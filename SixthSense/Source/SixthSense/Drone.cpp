@@ -99,35 +99,7 @@ void ADrone::ChasePlayer(float DeltaTime)
 	}
 
 	const FVector Step = ToTarget.GetSafeNormal() * MoveSpeed * DeltaTime;
-
-	// 1. Try to move straight at the player
-	FHitResult Hit;
-	AddActorWorldOffset(Step, true, &Hit);
-	if (!Hit.bBlockingHit)
-	{
-		return;
-	}
-
-	// 2. Blocked: slide along the wall
-	const FVector Slide = FVector::VectorPlaneProject(Step, Hit.Normal) * (1.f - Hit.Time);
-	if (!Slide.IsNearlyZero())
-	{
-		FHitResult SlideHit;
-		AddActorWorldOffset(Slide, true, &SlideHit);
-		if (!SlideHit.bBlockingHit)
-		{
-			return;
-		}
-	}
-
-	// 3. Still stuck (corner or head-on): climb up to get over it, up to the height limit
-	const float MaxZ = StartLocation.Z + MaxClimbHeight;
-	const float CurrentZ = GetActorLocation().Z;
-	if (CurrentZ < MaxZ)
-	{
-		const float Rise = FMath::Min(ClimbSpeed * DeltaTime, MaxZ - CurrentZ);
-		AddActorWorldOffset(FVector(0.f, 0.f, Rise), true);
-	}
+	AddActorWorldOffset(Step, true);
 }
 
 void ADrone::UpdateAimPitch()
@@ -170,3 +142,37 @@ void ADrone::HandleCatch()
 		if (AController* Controller = Target->GetController())
 		{
 			Controller->SetControlRotation(Rotation);
+		}
+	}
+
+	// Send the drone back to its start and resume
+	SetActorLocation(StartLocation);
+	bCaught = false;
+	if (HumSound)
+	{
+		HumAudio->Play();
+	}
+}
+
+void ADrone::OnShot()
+{
+	if (HitsLeft <= 0 || bCaught)
+	{
+		return;
+	}
+
+	--HitsLeft;
+
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+	}
+
+	if (HitsLeft > 0)
+	{
+		return;
+	}
+
+	OnDroneDestroyed.Broadcast();
+	Destroy();
+}
