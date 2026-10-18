@@ -20,7 +20,7 @@ public:
 	AShootableTarget();
 
 	// Called by the blind player's shot trace
-	virtual void OnShot() override;
+	virtual void OnShot() override {}
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Target")
