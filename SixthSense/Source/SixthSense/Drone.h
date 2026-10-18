@@ -22,6 +22,7 @@ public:
 	ADrone();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 	// From IShootable: called when the blind player's shot hits this drone
 	virtual void OnShot() override;
@@ -34,6 +35,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone")
 	TObjectPtr<UAudioComponent> HumAudio;
+
+	// Editor-only preview of DetectRadius (no collision, hidden in game)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone")
+	TObjectPtr<USphereComponent> DetectSphere;
 
 	// Looping MONO sound
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Sound")
@@ -60,6 +65,14 @@ public:
 	// Fly toward the blind player
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
 	bool bChasePlayer = true;
+
+	// Player must come this close before the chase starts (cm). 0 = always chase.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase", meta = (ClampMin = "0"))
+	float DetectRadius = 1000.f;
+
+	// Tick = keeps chasing once started. Untick = gives up when the player leaves the radius.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
+	bool bStayAlerted = true;
 
 	// cm per second (slow = fair for audio-only aiming)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
@@ -97,6 +110,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Drone")
 	FOnDroneDestroyed OnDroneDestroyed;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone")
+	bool bAlerted = false;
 
 protected:
 	virtual void BeginPlay() override;
