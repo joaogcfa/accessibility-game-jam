@@ -42,7 +42,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Sound")
 	TObjectPtr<USoundBase> HitSound;
 
-	// Played when the drone catches the player (before the restart)
+	// Played when the drone catches the player
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Sound")
 	TObjectPtr<USoundBase> CatchSound;
 
@@ -65,13 +65,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
 	float MoveSpeed = 120.f;
 
-	// Closer than this = caught = level restarts
+	// Closer than this = caught
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
 	float KillDistance = 200.f;
 
-	// Seconds after the catch sound before the restart
+	// Seconds after the catch before respawn / restart
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
 	float RestartDelay = 1.0f;
+
+	// Where the blind player respawns when caught (place a Target Point). Empty = restart the level.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
+	TObjectPtr<AActor> RespawnPoint;
 
 	// Hum pitch rises as the blind player aims closer
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Aim Pitch")
@@ -92,9 +96,10 @@ protected:
 private:
 	void ChasePlayer(float DeltaTime);
 	void UpdateAimPitch();
-	void RestartLevel();
+	void HandleCatch();
 
 	int32 HitsLeft = 1;
 	bool bCaught = false;
+	FVector StartLocation = FVector::ZeroVector;
 	FTimerHandle RestartTimer;
 };

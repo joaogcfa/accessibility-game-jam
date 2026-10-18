@@ -3,6 +3,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/Controller.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
@@ -39,6 +40,7 @@ void ADrone::BeginPlay()
 	Super::BeginPlay();
 
 	HitsLeft = FMath::Max(HitsToKill, 1);
+	StartLocation = GetActorLocation();
 
 	if (HumAttenuation)
 	{
@@ -92,7 +94,7 @@ void ADrone::ChasePlayer(float DeltaTime)
 		{
 			UGameplayStatics::PlaySound2D(this, CatchSound);
 		}
-		GetWorldTimerManager().SetTimer(RestartTimer, this, &ADrone::RestartLevel, FMath::Max(RestartDelay, 0.01f), false);
+		GetWorldTimerManager().SetTimer(RestartTimer, this, &ADrone::HandleCatch, FMath::Max(RestartDelay, 0.01f), false);
 		return;
 	}
 
@@ -123,10 +125,33 @@ void ADrone::UpdateAimPitch()
 	HumAudio->SetPitchMultiplier(FMath::Lerp(MinPitch, MaxPitch, Alpha));
 }
 
-void ADrone::RestartLevel()
+void ADrone::HandleCatch()
 {
-	const FString LevelName = UGameplayStatics::GetCurrentLevelName(this, true);
-	UGameplayStatics::OpenLevel(this, FName(*LevelName));
+	if (!RespawnPoint)
+	{
+		const FString LevelName = UGameplayStatics::GetCurrentLevelName(this, true);
+		UGameplayStatics::OpenLevel(this, FName(*LevelName));
+		return;
+	}
+
+	// Send the blind player to the respawn point
+	if (APawn* Target = UGameplayStatics::GetPlayerPawn(this, BlindPlayerIndex))
+	{
+		const FRotator Rotation = RespawnPoint->GetActorRotation();
+		Target->TeleportTo(RespawnPoint->GetActorLocation(), Rotation);
+		if (AController* Controller = Target->GetController())
+		{
+			Controller->SetControlRotation(Rotation);
+		}
+	}
+
+	// Send the drone back to its start and resume
+	SetActorLocation(StartLocation);
+	bCaught = false;
+	if (HumSound)
+	{
+		HumAudio->Play();
+	}
 }
 
 void ADrone::OnShot()
