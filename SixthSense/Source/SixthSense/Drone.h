@@ -65,6 +65,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
 	float MoveSpeed = 120.f;
 
+	// How fast it rises when blocked (to get over walls)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
+	float ClimbSpeed = 200.f;
+
+	// Max height it can climb above its start position (stops it going into a roof)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
+	float MaxClimbHeight = 600.f;
+
 	// Closer than this = caught
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Chase")
 	float KillDistance = 200.f;
