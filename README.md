@@ -2,67 +2,71 @@
 
 > Two players. Two perspectives. One way out.
 
-**Sixth Sense** is a cooperative puzzle game about communication, trust, and the power of sound. One player can see the environment and guides their partner, while the other navigates without sight using audio cues and their teammate's instructions.
+🏆 **Winner of the Accessibili-Tay Game Jam 2026** (Abertay University, with RNIB Scotland and Scopely)
 
-Created in three days for the [Accessibili-Tay Game Jam 2026](https://itch.io/jam/accessibili-tay), the game explores accessible game design and asymmetric cooperative gameplay.
+**Sixth Sense** is a local two-player co-op puzzle game about communication, trust and sound. One player can see the world and guides their partner. The other player is **blind** and moves through the maze by **directional audio alone**. Neither of you has the full picture, so you only get out by listening and talking.
 
-## How to play
+**[▶ Play it on itch.io](ITCH_GAME_URL)**  ·  **[Jam page](https://itch.io/jam/accessibili-tay)**
 
-1. Download and extract the game ZIP from the [itch.io submission](https://itch.io/game/edit/5181212#published).
-2. Launch the game executable.
-3. Play with a partner and communicate your surroundings clearly.
-4. Use headphones for the best audio experience.
+<img width="1727" height="911" alt="image" src="https://github.com/user-attachments/assets/da47b312-3943-41ca-9d8f-97a2ab3f21bb" />
 
-## How it works
 
-- **Communicate** — Work together to understand your surroundings.
-- **Listen** — Use directional audio to navigate the environment.
-- **Solve** — Overcome puzzles that require cooperation.
-- **Trust** — Neither player has all the information needed to escape alone.
+## Quick start
 
-Your friend is your sixth sense.
+1. Download the ZIP from the [itch.io page](ITCH_GAME_URL) and extract it.
+2. Run the game executable (Windows).
+3. **Put on headphones.** Directional audio is the whole game for the blind player.
+4. Sit side by side: one player on a **DualSense controller**, the other on **keyboard and mouse**.
+5. Quit with **Alt+F4**.
 
-## Accessibility focus
+**Requirements:** Windows PC, stereo headphones, one PlayStation DualSense controller, a second person.
 
-Sixth Sense was designed around the jam's focus on games that can be played by blind and visually impaired players. The core experience uses asymmetric information and audio communication so that a sighted player and a blind or visually impaired player can cooperate.
+## Roles and controls
 
-The game was also made with the jam's **2+, Sight Optional** diversifier in mind: a blind and sighted person can play together, with each player contributing a different perspective.
+| | Sighted player | Blind player |
+|---|---|---|
+| **Device** | Keyboard and mouse | DualSense controller |
+| **Move / look** | WASD / mouse | Left stick / right stick |
+| **Action** | **E** / **Q** to press switches and turn wheels; type the keypad code | **R1** to shoot |
+| **Sees** | The whole maze from above and around it | Nothing. Hears footsteps, speakers, plates, targets and drones |
+
+**Sighted player:** you can see the maze but cannot walk the blind player's route. Press switches and turn wheels to reconfigure the world, read out what you see, and enter the keypad code when you have it.
+
+**Blind player:** listen to your surroundings. Step on pressure plates to hear codes, **shoot** blocks and targets to hear what they are (a block announces its height level), and shoot drones when you hear them coming.
+
+The two of you meet at the end.
+
+## Accessibility design
+
+We made Sixth Sense so that a blind player and a sighted player can sit down and play the same game together, each doing something the other can't. It was our entry for the jam's **2+, Sight Optional** challenge.
+
+The blind player never needs the screen. They find their way by listening: a speaker gets louder as you walk toward it, a drone hums somewhere in the dark, and you shoot to find out what a block or target is. Footsteps tell you when you're moving, and when you've stopped against a wall.
+
+The sighted player can see the whole maze, and they're the only one who can press the switches and turn the wheels that change it (our take on the **Reconfigurable World** theme). Neither of you can finish alone, so you have to describe what you see and what you hear, and trust each other.
 
 ## Game jam
 
-**Accessibili-Tay Game Jam 2026**  
-**Theme:** *Reconfigurable World*  
-**Location:** Abertay University, Dundee  
-**Dates:** October 16–18, 2026  
-**Team:** Created during a three-day game jam
+| | |
+|---|---|
+| **Event** | Accessibili-Tay Game Jam 2026 |
+| **Theme** | *Reconfigurable World* |
+| **Where** | Abertay University, Dundee |
+| **When** | 16–18 October 2026, a 48-hour jam |
+| **Partners** | RNIB Scotland, Scopely |
 
-The jam focused on building games accessible to players with visual impairments and was held in partnership with **RNIB** and sponsored by **Scopely**.
+## Team
 
-### Jam diversifiers
+| Name | Role |
+|---|---|
+| **[João](https://sirjohnwilliam.itch.io/)** | Blind-player systems: two-player setup, audio listener, DualSense support, shooting, footsteps, pressure plates, shootable blocks, speakers |
+| **[Veer](https://itch.io/profile/suryaveerrr)** | Sighted-player systems: switches, wheels, toggle blocks, keypad, drone |
+| **[David](https://deeevad.itch.io/)** | Level design, Game design |
+| **[Emir](https://itch.io/profile/emirkilata)** | Sound design, intro and itch.io page |
 
-The jam invited teams to explore accessibility through several optional diversifiers, including:
-
-- Contrast
-- Storytelling
-- City of discovery!
-- 2+, Sight Optional
-- VI sports! Goalball! Showdown!
-- Text-to-Speech Adventure
-- Mobile-First
-- Accessible ≠ Easy
-
-## Built with
-
-- C++
-- C
-- Audio-led cooperative gameplay
-
-## Repository
-
-This repository contains the source and project files for the game jam submission. The project was created specifically for Accessibili-Tay Game Jam 2026.
 
 ## Credits
 
-Made for the Accessibili-Tay Game Jam 2026 by the Sixth Sense team.
-
-Please credit any external art, audio, code, or other assets according to their respective licenses.
+- **Game:** the Sixth Sense team (see above).
+- **Various sounds:** Freesound community contributor, from [Freesound](https://freesound.org/).
+- **DualSense plugin:** Unreal-Dualsense by Rafael Valoto (rafaelvaloto), MIT licence.
+- Hosted by **Abertay University**, with **RNIB Scotland** and **Scopely**.
